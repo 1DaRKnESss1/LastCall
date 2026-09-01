@@ -1,0 +1,35 @@
+/* Design tokens only. Every colour used anywhere in the app is defined here,
+   so a component stylesheet never hard-codes a hex value. */
+
+:root {
+  --bg: #f6f7f9;
+  --panel: #ffffff;
+  --border: #e2e5ea;
+  --text: #1b1f24;
+  --muted: #6b7280;
+  --accent: #3b6df5;
+  --accent-soft: #e8eeff;
+  --accent-text: #ffffff;
+  --late: #d93a3a;
+  --late-soft: #fdecec;
+
+  --radius: 6px;
+  --radius-lg: 8px;
+
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #16181d;
+    --panel: #1e2127;
+    --border: #2d323b;
+    --text: #e6e8eb;
+    --muted: #9aa1ab;
+    --accent: #6a8dff;
+    --accent-soft: #232a3d;
+    --accent-text: #101319;
+    --late: #ff6b6b;
+    --late-soft: #332224;
+  }
+}
