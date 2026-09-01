@@ -26,6 +26,8 @@ export type Settings = {
   id: number;
   /** SQLite has no boolean: 0 or 1. */
   os_notifications_enabled: number;
+  /** How long before a deadline the reminder fires. */
+  reminder_lead_minutes: number;
 };
 
 let dbPromise: Promise<Database> | null = null;

@@ -28,7 +28,7 @@ export function SubjectList({
   }
 
   return (
-    <aside className="sidebar">
+    <>
       <h2 className="sidebar-title">Предмети</h2>
 
       {subjects.length === 0 ? (
@@ -74,6 +74,6 @@ export function SubjectList({
           Додати
         </button>
       </form>
-    </aside>
+    </>
   );
 }

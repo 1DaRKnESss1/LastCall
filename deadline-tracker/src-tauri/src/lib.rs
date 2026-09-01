@@ -1,23 +1,31 @@
+mod reminders;
+mod tray;
+
+use tauri::WindowEvent;
+use tauri_plugin_autostart::MacosLauncher;
 use tauri_plugin_sql::{Migration, MigrationKind};
 
-/// Must match the connection string passed to `Database.load` on the frontend.
-const DB_URL: &str = "sqlite:deadline-tracker.db";
-
-// Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-#[tauri::command]
-fn greet(name: &str) -> String {
-    format!("Hello, {}! You've been greeted from Rust!", name)
-}
+/// Must match the connection string passed to `Database.load` on the frontend
+/// and the preload entry in tauri.conf.json.
+pub const DB_URL: &str = "sqlite:deadline-tracker.db";
 
 // Migrations are append-only: once a version has shipped it must never be
 // edited, only followed by a new one with a higher version.
 fn migrations() -> Vec<Migration> {
-    vec![Migration {
-        version: 1,
-        description: "initial schema",
-        sql: include_str!("../migrations/001_initial.sql"),
-        kind: MigrationKind::Up,
-    }]
+    vec![
+        Migration {
+            version: 1,
+            description: "initial schema",
+            sql: include_str!("../migrations/001_initial.sql"),
+            kind: MigrationKind::Up,
+        },
+        Migration {
+            version: 2,
+            description: "reminder bookkeeping",
+            sql: include_str!("../migrations/002_reminders.sql"),
+            kind: MigrationKind::Up,
+        },
+    ]
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -29,7 +37,26 @@ pub fn run() {
                 .add_migrations(DB_URL, migrations())
                 .build(),
         )
-        .invoke_handler(tauri::generate_handler![greet])
+        .plugin(tauri_plugin_notification::init())
+        .plugin(tauri_plugin_autostart::init(
+            MacosLauncher::LaunchAgent,
+            None,
+        ))
+        .setup(|app| {
+            tray::setup(app)?;
+            reminders::spawn(app.handle().clone());
+            Ok(())
+        })
+        .on_window_event(|window, event| {
+            // Closing the window hides it instead of quitting, so reminders
+            // keep firing from the tray.
+            if let WindowEvent::CloseRequested { api, .. } = event {
+                if !tray::is_quitting() {
+                    api.prevent_close();
+                    let _ = window.hide();
+                }
+            }
+        })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
