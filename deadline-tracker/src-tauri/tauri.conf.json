@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "deadline-tracker",
+  "productName": "LastCall",
   "version": "0.1.0",
-  "identifier": "com.dimon.deadline-tracker",
+  "identifier": "com.dimon.lastcall",
   "build": {
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://localhost:1420",
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "deadline-tracker",
+        "title": "LastCall",
         "width": 800,
         "height": 600
       }
@@ -35,7 +35,7 @@
   "plugins": {
     "sql": {
       "preload": [
-        "sqlite:deadline-tracker.db"
+        "sqlite:lastcall.db"
       ]
     }
   }

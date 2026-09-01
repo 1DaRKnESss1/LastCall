@@ -10,6 +10,10 @@ use crate::DB_URL;
 /// checking more often than this would only burn cycles.
 const TICK: Duration = Duration::from_secs(60);
 
+/// One of the Windows toast sounds ("Default", "IM", "Mail", "Reminder",
+/// "SMS"). Anything unrecognised is dropped and the toast goes back to silent.
+const SOUND: &str = "Reminder";
+
 /// Deadlines are stored as ISO-8601 UTC, so the 'localtime' modifier is what
 /// turns one into the wall-clock time the notification should quote.
 const SELECT_DUE: &str = "
@@ -83,6 +87,9 @@ async fn check_once<R: Runtime>(app: &AppHandle<R>) -> Result<(), sqlx::Error> {
             .builder()
             .title(format!("{subject}: {title}"))
             .body(format!("Дедлайн {deadline}"))
+            // Without an explicit sound the toast is marked silent, so this is
+            // what makes it audible rather than merely turning volume up.
+            .sound(SOUND)
             .show();
 
         // Only mark it sent if the notification really went out, so a failure

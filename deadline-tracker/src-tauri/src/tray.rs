@@ -20,7 +20,7 @@ pub fn setup(app: &App) -> tauri::Result<()> {
     let menu = Menu::with_items(app, &[&open, &quit])?;
 
     let mut builder = TrayIconBuilder::new()
-        .tooltip("Deadline Tracker")
+        .tooltip("LastCall")
         .menu(&menu)
         .on_menu_event(|app, event| match event.id.as_ref() {
             "open" => show_main(app),
