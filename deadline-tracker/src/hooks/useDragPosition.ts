@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { Point } from "../lib/board";
 
 /** Interactive elements inside a card must not start a drag. */
-const NO_DRAG = "button, input, label, select, textarea, a";
+const NO_DRAG = "button, input, label, select, textarea, a, form";
 
 /** Movement below this is a click, not a drag, and is not persisted. */
 const THRESHOLD_PX = 3;

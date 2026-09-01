@@ -1,7 +1,8 @@
 import "./SubjectCard.css";
 import { useState } from "react";
 import type { Subject, Task } from "../../db";
-import { isOverdue, timeLeftLabel, toIsoUtc } from "../../lib/datetime";
+import { toIsoUtc } from "../../lib/datetime";
+import { TaskRow } from "./TaskRow";
 import { cardPosition, tapeColor, tilt, type Point } from "../../lib/board";
 import { useDragPosition } from "../../hooks/useDragPosition";
 
@@ -13,6 +14,7 @@ type Props = {
   onLeadChange: (minutes: number) => void;
   onDeleteSubject: () => void;
   onCreateTask: (title: string, deadlineIso: string) => void;
+  onUpdateTask: (id: number, title: string, deadlineIso: string) => void;
   onToggleTask: (task: Task) => void;
   onDeleteTask: (id: number) => void;
 };
@@ -25,6 +27,7 @@ export function SubjectCard({
   onLeadChange,
   onDeleteSubject,
   onCreateTask,
+  onUpdateTask,
   onToggleTask,
   onDeleteTask,
 }: Props) {
@@ -112,40 +115,15 @@ export function SubjectCard({
       )}
 
       <ul className="task-list">
-        {tasks.map((task) => {
-          const done = task.status === "done";
-          // Only a pending task can be late; a finished one is just history.
-          const late = !done && isOverdue(task.deadline);
-          return (
-            <li
-              key={task.id}
-              className={`task${done ? " done" : ""}${late ? " late" : ""}`}
-            >
-              <label className="task-check">
-                <input
-                  type="checkbox"
-                  checked={done}
-                  onChange={() => onToggleTask(task)}
-                />
-                <span className="box" />
-              </label>
-              <div className="task-body">
-                <span className="task-title">{task.title}</span>
-                <span className="task-when">
-                  {done ? "здано" : timeLeftLabel(task.deadline)}
-                </span>
-              </div>
-              <button
-                type="button"
-                className="task-remove"
-                aria-label={`Видалити задачу ${task.title}`}
-                onClick={() => onDeleteTask(task.id)}
-              >
-                ×
-              </button>
-            </li>
-          );
-        })}
+        {tasks.map((task) => (
+          <TaskRow
+            key={task.id}
+            task={task}
+            onToggle={() => onToggleTask(task)}
+            onSave={(title, deadline) => onUpdateTask(task.id, title, deadline)}
+            onDelete={() => onDeleteTask(task.id)}
+          />
+        ))}
       </ul>
 
       {adding ? (

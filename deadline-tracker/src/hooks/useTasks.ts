@@ -7,6 +7,7 @@ export type UseTasks = {
   /** Tasks keyed by subject id, already ordered for display. */
   bySubject: Map<number, Task[]>;
   create: (subjectId: number, title: string, deadlineIso: string) => void;
+  update: (id: number, title: string, deadlineIso: string) => void;
   toggle: (task: Task) => void;
   remove: (id: number) => void;
 };
@@ -45,6 +46,15 @@ export function useTasks(run: Run): UseTasks {
     [run, reload],
   );
 
+  const update = useCallback(
+    (id: number, title: string, deadlineIso: string) =>
+      run(async () => {
+        await db.updateTask(id, title, deadlineIso);
+        await reload();
+      }),
+    [run, reload],
+  );
+
   const toggle = useCallback(
     (task: Task) =>
       run(async () => {
@@ -66,5 +76,5 @@ export function useTasks(run: Run): UseTasks {
     [run, reload],
   );
 
-  return { bySubject, create, toggle, remove };
+  return { bySubject, create, update, toggle, remove };
 }

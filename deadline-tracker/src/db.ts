@@ -101,6 +101,26 @@ export async function createTask(
   );
 }
 
+export async function updateTask(
+  id: number,
+  title: string,
+  deadlineIso: string,
+): Promise<void> {
+  const db = await getDb();
+  // SQLite evaluates every SET expression against the row's original values,
+  // so `deadline` on the right-hand side is still the old one. That lets a
+  // changed deadline re-arm the reminder while an untouched one keeps its
+  // "already announced" mark.
+  await db.execute(
+    `UPDATE tasks
+     SET title = $1,
+         deadline = $2,
+         notified_at = CASE WHEN deadline = $2 THEN notified_at ELSE NULL END
+     WHERE id = $3`,
+    [title, deadlineIso, id],
+  );
+}
+
 export async function setTaskStatus(
   id: number,
   status: TaskStatus,

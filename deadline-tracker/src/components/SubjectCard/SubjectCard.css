@@ -212,25 +212,70 @@
   font-weight: 600;
 }
 
-.task-remove {
+.task-action {
   flex: none;
   border: none;
   background: none;
   padding: 0 2px;
   color: var(--muted);
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1;
   cursor: pointer;
   opacity: 0;
 }
 
-.task:hover .task-remove,
-.task-remove:focus-visible {
+.task-action.danger {
+  font-size: 16px;
+}
+
+.task:hover .task-action,
+.task-action:focus-visible {
   opacity: 1;
 }
 
-.task-remove:hover {
+.task-action:hover {
+  color: var(--ink);
+}
+
+.task-action.danger:hover {
   color: var(--late);
+}
+
+/* An editing row drops the hover affordances and becomes a small form. */
+.task.editing {
+  display: block;
+  padding: 8px 0;
+}
+
+.task-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.task-edit-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.task-edit-actions button {
+  flex: 1;
+  padding: 5px 8px;
+  border: 1px solid var(--rule);
+  background: transparent;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.task-edit-actions button[type="submit"] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+.task-edit-actions button[type="submit"]:disabled {
+  opacity: 0.4;
+  cursor: default;
 }
 
 .task-add-open {
