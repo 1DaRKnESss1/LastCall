@@ -367,3 +367,35 @@
   color: var(--paper);
   font-weight: 500;
 }
+
+/* Lead time: a number plus a unit, stacked under its label so both fields
+   stay usable inside a narrow card. */
+.card-menu-row.lead {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 5px;
+}
+
+.lead-label {
+  font-size: 12px;
+}
+
+.lead-fields {
+  display: flex;
+  gap: 6px;
+}
+
+.lead-fields input {
+  width: 68px;
+}
+
+.lead-fields select {
+  flex: 1;
+  padding: 4px 6px;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 13px;
+  cursor: pointer;
+}

@@ -2,6 +2,7 @@ import "./SubjectCard.css";
 import { useState } from "react";
 import type { Subject, Task } from "../../db";
 import { toIsoUtc } from "../../lib/datetime";
+import { splitLead, toMinutes, unit, UNITS, type UnitKey } from "../../lib/duration";
 import { TaskRow } from "./TaskRow";
 import { cardPosition, tapeColor, tilt, type Point } from "../../lib/board";
 import { useDragPosition } from "../../hooks/useDragPosition";
@@ -36,6 +37,8 @@ export function SubjectCard({
   const [adding, setAdding] = useState(false);
   const [title, setTitle] = useState("");
   const [deadline, setDeadline] = useState("");
+
+  const lead = splitLead(subject.reminder_lead_minutes);
 
   const { point, dragging, onPointerDown } = useDragPosition(
     cardPosition(subject, index),
@@ -84,24 +87,42 @@ export function SubjectCard({
 
       {menuOpen && (
         <div className="card-menu">
-          <label className="card-menu-row">
-            Нагадувати за
-            <input
-              type="number"
-              min={1}
-              max={10080}
-              value={subject.reminder_lead_minutes}
-              onChange={(e) => {
-                const value = Number(e.currentTarget.value);
-                // An empty field would otherwise write NaN into a NOT NULL
-                // column and break the scheduler's query.
-                if (Number.isFinite(value) && value >= 1) {
-                  onLeadChange(Math.round(value));
+          <div className="card-menu-row lead">
+            <span className="lead-label">Нагадувати за</span>
+            <div className="lead-fields">
+              <input
+                type="number"
+                aria-label="Скільки"
+                min={1}
+                max={unit(lead.unit).max}
+                value={lead.value}
+                onChange={(e) => {
+                  const value = Number(e.currentTarget.value);
+                  // An empty field would otherwise write NaN into a NOT NULL
+                  // column and break the scheduler's query.
+                  if (Number.isFinite(value) && value >= 1) {
+                    onLeadChange(toMinutes(value, lead.unit));
+                  }
+                }}
+              />
+              <select
+                aria-label="Одиниця часу"
+                value={lead.unit}
+                onChange={(e) =>
+                  // Keep the number, swap the unit: "2 дні" becomes "2 тижні".
+                  onLeadChange(
+                    toMinutes(lead.value, e.currentTarget.value as UnitKey),
+                  )
                 }
-              }}
-            />
-            хв
-          </label>
+              >
+                {UNITS.map((u) => (
+                  <option key={u.key} value={u.key}>
+                    {u.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
           {confirming ? (
             <div className="card-confirm">
               <p className="card-confirm-text">
