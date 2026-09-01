@@ -32,6 +32,7 @@ export function SubjectCard({
   onDeleteTask,
 }: Props) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [confirming, setConfirming] = useState(false);
   const [adding, setAdding] = useState(false);
   const [title, setTitle] = useState("");
   const [deadline, setDeadline] = useState("");
@@ -71,7 +72,11 @@ export function SubjectCard({
           className="card-menu-button"
           aria-label={`Дії для предмета ${subject.name}`}
           aria-expanded={menuOpen}
-          onClick={() => setMenuOpen((v) => !v)}
+          onClick={() => {
+            // Closing the menu also abandons a half-made decision.
+            setConfirming(false);
+            setMenuOpen((v) => !v);
+          }}
         >
           ⋯
         </button>
@@ -97,16 +102,35 @@ export function SubjectCard({
             />
             хв
           </label>
-          <button
-            type="button"
-            className="card-menu-danger"
-            onClick={() => {
-              setMenuOpen(false);
-              onDeleteSubject();
-            }}
-          >
-            Зняти з дошки
-          </button>
+          {confirming ? (
+            <div className="card-confirm">
+              <p className="card-confirm-text">
+                {tasks.length > 0
+                  ? `Зняти разом із задачами (${tasks.length})?`
+                  : "Зняти цей аркуш із дошки?"}
+              </p>
+              <div className="card-confirm-actions">
+                <button
+                  type="button"
+                  className="danger"
+                  onClick={onDeleteSubject}
+                >
+                  Зняти
+                </button>
+                <button type="button" onClick={() => setConfirming(false)}>
+                  Скасувати
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button
+              type="button"
+              className="card-menu-danger"
+              onClick={() => setConfirming(true)}
+            >
+              Зняти з дошки
+            </button>
+          )}
         </div>
       )}
 

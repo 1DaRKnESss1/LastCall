@@ -7,7 +7,7 @@ export type UseSubjects = {
   subjects: Subject[];
   create: (name: string) => void;
   update: (id: number, patch: Omit<Partial<Subject>, "id" | "created_at">) => void;
-  remove: (subject: Subject) => void;
+  remove: (id: number) => void;
 };
 
 export function useSubjects(run: Run): UseSubjects {
@@ -39,15 +39,12 @@ export function useSubjects(run: Run): UseSubjects {
     [run, reload],
   );
 
+  // Confirmation is the card's job: a hook has no business drawing dialogs,
+  // and window.confirm renders browser chrome that looks nothing like the app.
   const remove = useCallback(
-    (subject: Subject) =>
+    (id: number) =>
       run(async () => {
-        // Deleting a subject cascades to its tasks, so it is worth a prompt.
-        const confirmed = window.confirm(
-          `Видалити «${subject.name}» разом з усіма його задачами?`,
-        );
-        if (!confirmed) return;
-        await db.deleteSubject(subject.id);
+        await db.deleteSubject(id);
         await reload();
       }),
     [run, reload],
