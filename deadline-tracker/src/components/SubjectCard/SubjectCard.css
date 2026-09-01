@@ -329,3 +329,41 @@
   opacity: 0.4;
   cursor: default;
 }
+
+/* Two-step delete: the danger button turns into its own confirmation in
+   place, so the decision stays on the card it affects. */
+.card-confirm {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.card-confirm-text {
+  margin: 0;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.card-confirm-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.card-confirm-actions button {
+  flex: 1;
+  padding: 5px 8px;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  background: var(--paper);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.card-confirm-actions .danger {
+  background: var(--late);
+  border-color: var(--late);
+  color: var(--paper);
+  font-weight: 500;
+}
