@@ -1,0 +1,76 @@
+/* Element resets and the primitives shared by more than one component.
+   Anything used by a single component lives in that component's stylesheet. */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Segoe UI", system-ui, sans-serif;
+  font-size: 14px;
+}
+
+input,
+button {
+  font: inherit;
+  color: inherit;
+}
+
+input {
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--panel);
+}
+
+input:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* Small "×" affordance on a list row. Hidden until the row is hovered so the
+   list stays quiet at rest; each component decides which row reveals it. */
+.icon-button {
+  padding: 2px 8px;
+  border: none;
+  background: none;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 4px;
+  opacity: 0;
+}
+
+.icon-button:hover {
+  color: var(--late);
+}
+
+.icon-button:focus-visible {
+  opacity: 1;
+}
+
+button[type="submit"] {
+  padding: 7px 14px;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--accent-text);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+button[type="submit"]:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.empty {
+  margin: 4px 0;
+  color: var(--muted);
+  font-size: 13px;
+}

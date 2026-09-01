@@ -1,0 +1,12 @@
+.error-bar {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  max-width: 460px;
+  padding: 10px 14px;
+  border: 1px solid var(--late);
+  border-radius: var(--radius-lg);
+  background: var(--late-soft);
+  color: var(--late);
+  font-size: 13px;
+}
