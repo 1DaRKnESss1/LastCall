@@ -12,6 +12,7 @@ type Props = {
   onLeadChange: (id: number, minutes: number) => void;
   onDeleteSubject: (subject: Subject) => void;
   onCreateTask: (subjectId: number, title: string, deadlineIso: string) => void;
+  onUpdateTask: (id: number, title: string, deadlineIso: string) => void;
   onToggleTask: (task: Task) => void;
   onDeleteTask: (id: number) => void;
   onOpenSettings: () => void;
@@ -25,6 +26,7 @@ export function Board({
   onLeadChange,
   onDeleteSubject,
   onCreateTask,
+  onUpdateTask,
   onToggleTask,
   onDeleteTask,
   onOpenSettings,
@@ -105,6 +107,7 @@ export function Board({
             onCreateTask={(title, deadline) =>
               onCreateTask(subject.id, title, deadline)
             }
+            onUpdateTask={onUpdateTask}
             onToggleTask={onToggleTask}
             onDeleteTask={onDeleteTask}
           />

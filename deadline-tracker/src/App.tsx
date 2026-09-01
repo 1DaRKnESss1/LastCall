@@ -29,6 +29,7 @@ function App() {
         }
         onDeleteSubject={subjects.remove}
         onCreateTask={tasks.create}
+        onUpdateTask={tasks.update}
         onToggleTask={tasks.toggle}
         onDeleteTask={tasks.remove}
         onOpenSettings={() => setSettingsOpen(true)}
