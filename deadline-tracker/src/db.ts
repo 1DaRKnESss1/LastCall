@@ -1,7 +1,7 @@
 import Database from "@tauri-apps/plugin-sql";
 
 /** Must match DB_URL in src-tauri/src/lib.rs. */
-const DB_URL = "sqlite:deadline-tracker.db";
+const DB_URL = "sqlite:lastcall.db";
 
 export type TaskStatus = "pending" | "done";
 

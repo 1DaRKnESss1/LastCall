@@ -7,7 +7,7 @@ use tauri_plugin_sql::{Migration, MigrationKind};
 
 /// Must match the connection string passed to `Database.load` on the frontend
 /// and the preload entry in tauri.conf.json.
-pub const DB_URL: &str = "sqlite:deadline-tracker.db";
+pub const DB_URL: &str = "sqlite:lastcall.db";
 
 // Migrations are append-only: once a version has shipped it must never be
 // edited, only followed by a new one with a higher version.
