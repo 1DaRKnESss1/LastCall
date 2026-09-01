@@ -43,6 +43,13 @@ fn migrations() -> Vec<Migration> {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        // Registered first, as the plugin requires: a second launch must be
+        // intercepted before anything else starts up. Closing the window only
+        // hides it, so clicking the shortcut again would otherwise start a
+        // rival copy with its own scheduler, tray icon and notifications.
+        .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
+            tray::show_main(app);
+        }))
         .plugin(tauri_plugin_opener::init())
         .plugin(
             tauri_plugin_sql::Builder::default()

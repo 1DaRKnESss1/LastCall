@@ -25,6 +25,7 @@ serde_json = "1"
 tauri-plugin-sql = { version = "2.4.1", features = ["sqlite"] }
 tauri-plugin-notification = "2"
 tauri-plugin-autostart = "2"
+tauri-plugin-single-instance = "2"
 # Same 0.8.x the sql plugin uses, so DbPool::sqlite() hands back a Pool we can query.
 sqlx = { version = "0.8", default-features = false, features = ["sqlite", "runtime-tokio"] }
 tokio = { version = "1", features = ["time"] }
