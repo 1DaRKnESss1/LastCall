@@ -25,7 +25,8 @@ const SELECT_DUE: &str = "
     JOIN subjects s ON s.id = t.subject_id
     WHERE t.status = 'pending'
       AND t.notified_at IS NULL
-      AND t.deadline <= strftime('%Y-%m-%dT%H:%M:%SZ', 'now', '+' || ?1 || ' minutes')
+      AND t.deadline <= strftime('%Y-%m-%dT%H:%M:%SZ', 'now',
+                                 '+' || s.reminder_lead_minutes || ' minutes')
     ORDER BY t.deadline
 ";
 
@@ -59,11 +60,10 @@ async fn check_once<R: Runtime>(app: &AppHandle<R>) -> Result<(), sqlx::Error> {
         return Ok(());
     };
 
-    let (enabled, lead_minutes): (i64, i64) = sqlx::query_as(
-        "SELECT os_notifications_enabled, reminder_lead_minutes FROM settings WHERE id = 1",
-    )
-    .fetch_one(pool)
-    .await?;
+    let (enabled,): (i64,) =
+        sqlx::query_as("SELECT os_notifications_enabled FROM settings WHERE id = 1")
+            .fetch_one(pool)
+            .await?;
 
     if enabled == 0 {
         return Ok(());
@@ -71,10 +71,8 @@ async fn check_once<R: Runtime>(app: &AppHandle<R>) -> Result<(), sqlx::Error> {
 
     // notified_at IS NULL is what keeps a task from being announced on every
     // tick — it is set below, once the notification has actually been shown.
-    let due: Vec<DueTask> = sqlx::query_as(SELECT_DUE)
-        .bind(lead_minutes)
-        .fetch_all(pool)
-        .await?;
+    // The lead time now comes from each subject row, so nothing is bound here.
+    let due: Vec<DueTask> = sqlx::query_as(SELECT_DUE).fetch_all(pool).await?;
 
     #[cfg(debug_assertions)]
     if !due.is_empty() {

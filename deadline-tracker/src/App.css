@@ -1,18 +1,4 @@
-/* The app shell only. Everything inside a panel is styled by that panel. */
+/* The shell is just the scrolling board; every panel styles its own inside. */
 .app {
-  display: grid;
-  grid-template-columns: 240px 1fr;
   height: 100vh;
-}
-
-/* The left column is owned by the shell; SubjectList and Settings are just
-   its flex children, which is what lets .add-subject push Settings down. */
-.sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 16px 12px;
-  border-right: 1px solid var(--border);
-  background: var(--panel);
-  overflow-y: auto;
 }

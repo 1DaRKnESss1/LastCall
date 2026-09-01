@@ -1,39 +1,42 @@
+import { useState } from "react";
 import { useAsyncError } from "./hooks/useAsyncError";
 import { useSubjects } from "./hooks/useSubjects";
 import { useTasks } from "./hooks/useTasks";
 import { useSettings } from "./hooks/useSettings";
-import { SubjectList } from "./components/SubjectList";
-import { TaskList } from "./components/TaskList";
-import { Settings } from "./components/Settings";
+import { Board } from "./components/Board";
+import { SettingsDialog } from "./components/SettingsDialog";
 import { ErrorBar } from "./components/ErrorBar";
 import "./App.css";
 
 function App() {
   const { error, run } = useAsyncError();
   const subjects = useSubjects(run);
-  const tasks = useTasks(run, subjects.selectedId);
+  const tasks = useTasks(run);
   const settings = useSettings(run);
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   return (
     <main className="app">
-      <aside className="sidebar">
-        <SubjectList
-          subjects={subjects.subjects}
-          selectedId={subjects.selectedId}
-          onSelect={subjects.select}
-          onCreate={subjects.create}
-          onDelete={subjects.remove}
-        />
-        <Settings {...settings} />
-      </aside>
-
-      <TaskList
-        subject={subjects.selected}
-        tasks={tasks.tasks}
-        onCreate={tasks.create}
-        onToggle={tasks.toggle}
-        onDelete={tasks.remove}
+      <Board
+        subjects={subjects.subjects}
+        tasksBySubject={tasks.bySubject}
+        onCreateSubject={subjects.create}
+        onMoveSubject={(id, point) =>
+          subjects.update(id, { pos_x: point.x, pos_y: point.y })
+        }
+        onLeadChange={(id, minutes) =>
+          subjects.update(id, { reminder_lead_minutes: minutes })
+        }
+        onDeleteSubject={subjects.remove}
+        onCreateTask={tasks.create}
+        onToggleTask={tasks.toggle}
+        onDeleteTask={tasks.remove}
+        onOpenSettings={() => setSettingsOpen(true)}
       />
+
+      {settingsOpen && (
+        <SettingsDialog {...settings} onClose={() => setSettingsOpen(false)} />
+      )}
 
       {error && <ErrorBar message={error} />}
     </main>

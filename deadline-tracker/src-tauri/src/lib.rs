@@ -25,6 +25,18 @@ fn migrations() -> Vec<Migration> {
             sql: include_str!("../migrations/002_reminders.sql"),
             kind: MigrationKind::Up,
         },
+        Migration {
+            version: 3,
+            description: "per-subject reminder lead",
+            sql: include_str!("../migrations/003_subject_reminders.sql"),
+            kind: MigrationKind::Up,
+        },
+        Migration {
+            version: 4,
+            description: "card positions",
+            sql: include_str!("../migrations/004_board.sql"),
+            kind: MigrationKind::Up,
+        },
     ]
 }
 

@@ -1,35 +1,35 @@
 /* Design tokens only. Every colour used anywhere in the app is defined here,
-   so a component stylesheet never hard-codes a hex value. */
+   so a component stylesheet never hard-codes a value.
 
-:root {
-  --bg: #f6f7f9;
-  --panel: #ffffff;
-  --border: #e2e5ea;
-  --text: #1b1f24;
-  --muted: #6b7280;
-  --accent: #3b6df5;
-  --accent-soft: #e8eeff;
-  --accent-text: #ffffff;
-  --late: #d93a3a;
-  --late-soft: #fdecec;
+   The board deliberately commits to a single cork-and-paper look rather than
+   following the OS theme: a dark corkboard would not be the same object. */
 
-  --radius: 6px;
-  --radius-lg: 8px;
-
-  color-scheme: light dark;
+@font-face {
+  font-family: "Caveat";
+  src: url("../assets/fonts/Caveat-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #16181d;
-    --panel: #1e2127;
-    --border: #2d323b;
-    --text: #e6e8eb;
-    --muted: #9aa1ab;
-    --accent: #6a8dff;
-    --accent-soft: #232a3d;
-    --accent-text: #101319;
-    --late: #ff6b6b;
-    --late-soft: #332224;
-  }
+:root {
+  --board: #8a6a4f;
+  --board-dark: #7a5c43;
+  --board-text: #fdf6e8;
+
+  --paper: #fdf9ef;
+  --ink: #3a3226;
+  --ink-soft: #6b5f4d;
+  --muted: #9a8f7d;
+  --rule: #e3dbc9;
+
+  --late: #c0392b;
+  --done: #4a7c3f;
+  --pin: #c0392b;
+
+  --card-width: 264px;
+  --font-hand: "Caveat", "Segoe Script", cursive;
+  --font-ui: "Segoe UI", system-ui, sans-serif;
+
+  color-scheme: light;
 }

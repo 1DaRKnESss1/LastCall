@@ -10,6 +10,11 @@ export type Subject = {
   name: string;
   /** ISO-8601 UTC, e.g. "2026-09-01T13:50:00Z". */
   created_at: string;
+  /** How long before a deadline this subject's tasks warn. */
+  reminder_lead_minutes: number;
+  /** Board coordinates; null until the card has been dragged. */
+  pos_x: number | null;
+  pos_y: number | null;
 };
 
 export type Task = {
@@ -26,8 +31,6 @@ export type Settings = {
   id: number;
   /** SQLite has no boolean: 0 or 1. */
   os_notifications_enabled: number;
-  /** How long before a deadline the reminder fires. */
-  reminder_lead_minutes: number;
 };
 
 let dbPromise: Promise<Database> | null = null;
@@ -51,6 +54,25 @@ export async function createSubject(name: string): Promise<void> {
   await db.execute("INSERT INTO subjects (name) VALUES ($1)", [name]);
 }
 
+export async function updateSubject(
+  id: number,
+  patch: Omit<Partial<Subject>, "id" | "created_at">,
+): Promise<void> {
+  const db = await getDb();
+  const entries = Object.entries(patch);
+  if (entries.length === 0) return;
+
+  // Column names come from the Subject type, never from user input; only the
+  // values are parameterised.
+  const assignments = entries
+    .map(([column], i) => `${column} = $${i + 1}`)
+    .join(", ");
+  await db.execute(
+    `UPDATE subjects SET ${assignments} WHERE id = $${entries.length + 1}`,
+    [...entries.map(([, value]) => value), id],
+  );
+}
+
 /** Cascades: the subject's tasks are deleted with it. */
 export async function deleteSubject(id: number): Promise<void> {
   const db = await getDb();
@@ -58,18 +80,13 @@ export async function deleteSubject(id: number): Promise<void> {
 }
 
 // Pending tasks first, then by deadline — the soonest deadline is what the
-// user needs to see at the top.
-const TASK_ORDER = "ORDER BY status, deadline";
+// user needs to see at the top of a card.
+const TASK_ORDER = "ORDER BY subject_id, status, deadline";
 
-export async function listTasks(subjectId?: number): Promise<Task[]> {
+/** Every task on the board; the UI groups them by subject itself. */
+export async function listTasks(): Promise<Task[]> {
   const db = await getDb();
-  if (subjectId === undefined) {
-    return db.select<Task[]>(`SELECT * FROM tasks ${TASK_ORDER}`);
-  }
-  return db.select<Task[]>(
-    `SELECT * FROM tasks WHERE subject_id = $1 ${TASK_ORDER}`,
-    [subjectId],
-  );
+  return db.select<Task[]>(`SELECT * FROM tasks ${TASK_ORDER}`);
 }
 
 export async function createTask(
