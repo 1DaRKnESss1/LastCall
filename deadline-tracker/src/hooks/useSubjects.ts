@@ -5,27 +5,16 @@ import type { Run } from "./useAsyncError";
 
 export type UseSubjects = {
   subjects: Subject[];
-  selected: Subject | null;
-  selectedId: number | null;
-  select: (id: number) => void;
   create: (name: string) => void;
+  update: (id: number, patch: Omit<Partial<Subject>, "id" | "created_at">) => void;
   remove: (subject: Subject) => void;
 };
 
 export function useSubjects(run: Run): UseSubjects {
   const [subjects, setSubjects] = useState<Subject[]>([]);
-  const [selectedId, setSelectedId] = useState<number | null>(null);
 
   const reload = useCallback(async () => {
-    const rows = await db.listSubjects();
-    setSubjects(rows);
-    // The current selection may have just been deleted; fall back to the
-    // first subject so the task panel never points at a missing row.
-    setSelectedId((current) =>
-      current !== null && rows.some((s) => s.id === current)
-        ? current
-        : (rows[0]?.id ?? null),
-    );
+    setSubjects(await db.listSubjects());
   }, []);
 
   useEffect(() => {
@@ -36,6 +25,15 @@ export function useSubjects(run: Run): UseSubjects {
     (name: string) =>
       run(async () => {
         await db.createSubject(name);
+        await reload();
+      }),
+    [run, reload],
+  );
+
+  const update = useCallback(
+    (id: number, patch: Omit<Partial<Subject>, "id" | "created_at">) =>
+      run(async () => {
+        await db.updateSubject(id, patch);
         await reload();
       }),
     [run, reload],
@@ -55,12 +53,5 @@ export function useSubjects(run: Run): UseSubjects {
     [run, reload],
   );
 
-  return {
-    subjects,
-    selected: subjects.find((s) => s.id === selectedId) ?? null,
-    selectedId,
-    select: setSelectedId,
-    create,
-    remove,
-  };
+  return { subjects, create, update, remove };
 }

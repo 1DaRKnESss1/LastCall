@@ -1,0 +1,102 @@
+.board-scroll {
+  height: 100vh;
+  overflow: auto;
+}
+
+.board-bar {
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 20px 10px;
+}
+
+.board-title {
+  margin: 0;
+  font-family: var(--font-hand);
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--board-text);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  letter-spacing: 0.5px;
+}
+
+/* Pinned to the right edge of the bar without pushing the title off centre. */
+.board-actions {
+  position: absolute;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.board-button {
+  padding: 9px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.14);
+  color: var(--board-text);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+/* The gear reads as an icon, so it gets a square footprint of the same height
+   rather than the wider text padding. */
+.board-button.icon {
+  padding: 9px 12px;
+  font-size: 17px;
+}
+
+.board-button:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.subject-add {
+  display: flex;
+  gap: 6px;
+}
+
+.subject-add input {
+  width: 190px;
+  padding: 8px 11px;
+  font-size: 15px;
+}
+
+.subject-add button {
+  padding: 9px 16px;
+  border: none;
+  border-radius: 6px;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.subject-add button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.board {
+  position: relative;
+  padding-bottom: 40px;
+}
+
+.board-empty {
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 15px;
+  font-style: italic;
+  white-space: nowrap;
+}

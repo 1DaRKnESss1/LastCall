@@ -1,0 +1,286 @@
+.card {
+  position: absolute;
+  width: var(--card-width);
+  padding: 26px 18px 14px;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.18),
+    0 10px 22px rgba(0, 0, 0, 0.22);
+  transition: box-shadow 0.15s ease;
+  /* The pin and tape hang over the top edge. */
+  overflow: visible;
+  touch-action: none;
+  cursor: grab;
+}
+
+.card.dragging {
+  cursor: grabbing;
+  z-index: 20;
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.2),
+    0 24px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* Washi tape across the top-right corner. */
+.tape {
+  position: absolute;
+  top: -10px;
+  right: -14px;
+  width: 74px;
+  height: 26px;
+  opacity: 0.75;
+  transform: rotate(24deg);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+}
+
+.pin {
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  margin-left: -8px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 30%, #ff8a80, #c0392b 62%, #8e2318);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.35);
+}
+
+.card-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.card-title {
+  flex: 1;
+  margin: 0;
+  font-family: var(--font-hand);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+
+.card-menu-button {
+  border: none;
+  background: none;
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1;
+  padding: 2px 4px;
+  cursor: pointer;
+  opacity: 0;
+}
+
+.card:hover .card-menu-button,
+.card-menu-button:focus-visible,
+.card-menu-button[aria-expanded="true"] {
+  opacity: 1;
+}
+
+.card-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.04);
+  border-radius: 4px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.card-menu-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.card-menu-row input {
+  width: 62px;
+}
+
+.card-menu-danger {
+  align-self: flex-start;
+  border: none;
+  background: none;
+  padding: 0;
+  color: var(--late);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.card-menu-danger:hover {
+  text-decoration: underline;
+}
+
+.card-empty {
+  margin: 14px 0 6px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+  font-style: italic;
+}
+
+.task-list {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+}
+
+.task {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+/* A hand-drawn looking checkbox: the real input stays for keyboard and
+   screen readers, the square is what the user sees. */
+.task-check {
+  position: relative;
+  display: block;
+  flex: none;
+  margin-top: 1px;
+  cursor: pointer;
+}
+
+.task-check input {
+  position: absolute;
+  opacity: 0;
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  cursor: pointer;
+}
+
+.task-check .box {
+  display: block;
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid var(--ink-soft);
+  background: transparent;
+}
+
+.task-check input:checked + .box {
+  background: var(--ink);
+  border-color: var(--ink);
+}
+
+.task-check input:focus-visible + .box {
+  outline: 2px solid var(--pin);
+  outline-offset: 2px;
+}
+
+.task-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  flex: 1;
+  min-width: 0;
+}
+
+.task-title {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.32;
+  overflow-wrap: anywhere;
+}
+
+.task-when {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.task.late .task-when {
+  color: var(--late);
+  font-weight: 700;
+}
+
+.task.done .task-title {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+
+.task.done .task-when {
+  color: var(--done);
+  font-weight: 600;
+}
+
+.task-remove {
+  flex: none;
+  border: none;
+  background: none;
+  padding: 0 2px;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0;
+}
+
+.task:hover .task-remove,
+.task-remove:focus-visible {
+  opacity: 1;
+}
+
+.task-remove:hover {
+  color: var(--late);
+}
+
+.task-add-open {
+  margin-top: 10px;
+  border: none;
+  background: none;
+  padding: 2px 0;
+  color: var(--muted);
+  font-size: 12px;
+  cursor: pointer;
+  opacity: 0;
+}
+
+.card:hover .task-add-open,
+.task-add-open:focus-visible {
+  opacity: 1;
+}
+
+.task-add-open:hover {
+  color: var(--ink);
+}
+
+.task-add {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.task-add-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.task-add-actions button {
+  flex: 1;
+  padding: 5px 8px;
+  border: 1px solid var(--rule);
+  background: transparent;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.task-add-actions button[type="submit"] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+.task-add-actions button[type="submit"]:disabled {
+  opacity: 0.4;
+  cursor: default;
+}

@@ -1,34 +1,48 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import * as db from "../db";
 import type { Task } from "../db";
 import type { Run } from "./useAsyncError";
 
 export type UseTasks = {
-  tasks: Task[];
-  create: (title: string, deadlineIso: string) => void;
+  /** Tasks keyed by subject id, already ordered for display. */
+  bySubject: Map<number, Task[]>;
+  create: (subjectId: number, title: string, deadlineIso: string) => void;
   toggle: (task: Task) => void;
   remove: (id: number) => void;
 };
 
-export function useTasks(run: Run, subjectId: number | null): UseTasks {
+export function useTasks(run: Run): UseTasks {
   const [tasks, setTasks] = useState<Task[]>([]);
 
   const reload = useCallback(async () => {
-    setTasks(subjectId === null ? [] : await db.listTasks(subjectId));
-  }, [subjectId]);
+    setTasks(await db.listTasks());
+  }, []);
 
   useEffect(() => {
     run(reload);
   }, [run, reload]);
 
+  // Every card reads from one query instead of firing its own.
+  const bySubject = useMemo(() => {
+    const grouped = new Map<number, Task[]>();
+    for (const task of tasks) {
+      const list = grouped.get(task.subject_id);
+      if (list) {
+        list.push(task);
+      } else {
+        grouped.set(task.subject_id, [task]);
+      }
+    }
+    return grouped;
+  }, [tasks]);
+
   const create = useCallback(
-    (title: string, deadlineIso: string) =>
+    (subjectId: number, title: string, deadlineIso: string) =>
       run(async () => {
-        if (subjectId === null) return;
         await db.createTask(subjectId, title, deadlineIso);
         await reload();
       }),
-    [run, reload, subjectId],
+    [run, reload],
   );
 
   const toggle = useCallback(
@@ -52,5 +66,5 @@ export function useTasks(run: Run, subjectId: number | null): UseTasks {
     [run, reload],
   );
 
-  return { tasks, create, toggle, remove };
+  return { bySubject, create, toggle, remove };
 }

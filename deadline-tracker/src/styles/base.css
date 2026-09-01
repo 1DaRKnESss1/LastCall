@@ -1,5 +1,4 @@
-/* Element resets and the primitives shared by more than one component.
-   Anything used by a single component lives in that component's stylesheet. */
+/* Element resets and the primitives shared by more than one component. */
 
 * {
   box-sizing: border-box;
@@ -7,10 +6,16 @@
 
 body {
   margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: "Segoe UI", system-ui, sans-serif;
+  color: var(--ink);
+  font-family: var(--font-ui);
   font-size: 14px;
+  /* Cork: a warm base with fine speckle, cheaper and sharper than an image. */
+  background-color: var(--board);
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(0, 0, 0, 0.07) 1px, transparent 1px),
+    radial-gradient(circle at 70% 65%, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    radial-gradient(circle at 45% 85%, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+  background-size: 22px 22px, 31px 31px, 17px 17px;
 }
 
 input,
@@ -20,57 +25,23 @@ button {
 }
 
 input {
-  padding: 7px 10px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--panel);
+  padding: 5px 8px;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 13px;
+}
+
+input[type="checkbox"] {
+  width: auto;
+  padding: 0;
+  accent-color: var(--ink);
+  cursor: pointer;
 }
 
 input:focus-visible,
 button:focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--pin);
   outline-offset: 1px;
-}
-
-/* Small "×" affordance on a list row. Hidden until the row is hovered so the
-   list stays quiet at rest; each component decides which row reveals it. */
-.icon-button {
-  padding: 2px 8px;
-  border: none;
-  background: none;
-  color: var(--muted);
-  font-size: 16px;
-  line-height: 1;
-  cursor: pointer;
-  border-radius: 4px;
-  opacity: 0;
-}
-
-.icon-button:hover {
-  color: var(--late);
-}
-
-.icon-button:focus-visible {
-  opacity: 1;
-}
-
-button[type="submit"] {
-  padding: 7px 14px;
-  border: none;
-  border-radius: var(--radius);
-  background: var(--accent);
-  color: var(--accent-text);
-  font-weight: 500;
-  cursor: pointer;
-}
-
-button[type="submit"]:disabled {
-  opacity: 0.45;
-  cursor: default;
-}
-
-.empty {
-  margin: 4px 0;
-  color: var(--muted);
-  font-size: 13px;
 }
